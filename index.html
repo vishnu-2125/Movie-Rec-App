@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Movie Recommendations</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ url_for('static', filename='background.jpg') }}') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+        }
+        .hero-section h1 {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #f8d210;
+        }
+        .hero-section p {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+        }
+        .btn-custom {
+            background-color: #f8d210;
+            color: #000;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            margin: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #ffd700;
+            transform: scale(1.05);
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <h1>Welcome to Movie Recommendations</h1>
+        <p>Discover your next favorite movie. Please login or register to get personalized recommendations.</p>
+        <div class="btn-group">
+            <a href="{{ url_for('login') }}" class="btn btn-custom"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a href="{{ url_for('register') }}" class="btn btn-custom"><i class="fas fa-user-plus"></i> Register</a>
+        </div>
+    </div>
+</body>
+</html>

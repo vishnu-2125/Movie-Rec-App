@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Add background image */
+    body {
+        background: url('{{ url_for('static', filename='movies.png') }}') no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+    }
+    .card {
+        background-color: rgba(255, 255, 255, 0.5); /* Make the card transparent */
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin-top: 100px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .card-header {
+        background-color: transparent; /* Make the card header transparent */
+        color: #fff;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 10px 10px 0 0;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        transition: background-color 0.3s ease;
+        border-radius: 5px;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .form-control {
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 16px;
+        background-color: rgba(255, 255, 255, 0.5); /* Make the form controls transparent */
+        border: 1px solid #ccc;
+    }
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+      }
+      
+      .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+      }
+      
+      .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+      }
+      
+    label {
+        color: #333; /* Darker color for better visibility */
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    /* Add some animation to the login form */
+    .card-body {
+        animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    /* Add some glow effect to the input fields */
+    .form-control:focus {
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">Register</div>
+    <div class="card-body">
+        <form method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ 'alert-success' if category == 'success' else 'alert-danger' }}">
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+{% endblock %}

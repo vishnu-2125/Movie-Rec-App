@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendations</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('static/movie.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        .movie-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px; /* Smaller border radius for a sleeker look */
+            padding: 5px 10px; /* Reduced padding */
+            margin: 5px 0; /* Less margin between cards */
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center; /* Center align items vertically */
+            justify-content: space-between; /* Space out the content */
+        }
+    
+        .movie-card:hover {
+            transform: translateY(-2px); /* Less pronounced hover effect */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    
+        .movie-title {
+            font-size: 0.8em; /* Smaller font size */
+            font-weight: bold;
+            color: #ffeb3b; /* Vibrant color */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+    
+        .btn-group .btn-like, .btn-group .btn-dislike {
+            font-size: 0.9em; /* Smaller button icon size */
+            padding: 2px 5px; /* Smaller padding for buttons */
+        }
+        .btn-like, .btn-dislike {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2em;
+            padding: 5px 10px;
+            margin-left: 10px;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .btn-like:hover, .btn-like:focus {
+            color: #4CAF50;
+            transform: scale(1.2);
+        }
+        .btn-like.active {
+            color: #4CAF50;
+        }
+    
+        .btn-dislike.active {
+            color: #F44336;
+        }
+        .btn-dislike:hover, .btn-dislike:focus {
+            color: #F44336;
+            transform: scale(1.2);
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            border: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background-color: #2196F3;
+            border: none;
+        }
+
+        .btn-info:hover {
+            background-color: #0b7dda;
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        h1, h2 {
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Button -->
+        <div class="text-right my-3">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary"><i class="fas fa-home"></i> Home</a>
+        </div>
+
+        <h1 class="text-center my-4">Movie Recommendations</h1>
+        <form method="POST" class="mb-4">
+            <div class="form-group">
+                <label for="movie">Enter a movie:</label>
+                <input type="text" id="movie" name="movie" class="form-control" placeholder="Type a movie name">
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Get Recommendations</button>
+        </form>
+        
+        {% if recommendations %}
+            <h2 class="text-center">Recommendations:</h2>
+            <div class="list-group">
+                <div class="list-group">
+                    {% for movie in recommendations %}
+                        <div class="movie-card">
+                            <span class="movie-title">{{ movie }}</span>
+                            <div class="btn-group">
+                                <form method="POST" action="{{ url_for('like_movie') }}">
+                                    <input type="hidden" name="movie" value="{{ movie }}">
+                                    <button type="submit" class="btn btn-like {{ 'active' if movie in liked_movies else '' }}">
+                                        <i class="fas fa-thumbs-up"></i>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('dislike_movie') }}">
+                                    <input type="hidden" name="movie" value="{{ movie }}">
+                                    <button type="submit" class="btn btn-dislike {{ 'active' if movie in disliked_movies else '' }}">
+                                        <i class="fas fa-thumbs-down"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if liked_movies %}
+            <button class="btn btn-info btn-block mt-4" type="button" data-toggle="collapse" data-target="#likedMovies" aria-expanded="false" aria-controls="likedMovies">
+                Liked Movies <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="collapse" id="likedMovies">
+                <div class="list-group mt-3">
+                    {% for movie in liked_movies %}
+                        <div class="movie-card">
+                            <span class="movie-title">{{ movie }}</span>
+                            <div class="btn-group">
+                                <form method="POST" action="{{ url_for('modify_list') }}">
+                                    <input type="hidden" name="movie" value="{{ movie }}">
+                                    <input type="hidden" name="action" value="remove_like">
+                                    <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-times"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if disliked_movies %}
+            <button class="btn btn-info btn-block mt-4" type="button" data-toggle="collapse" data-target="#dislikedMovies" aria-expanded="false" aria-controls="dislikedMovies">
+                Disliked Movies <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="collapse" id="dislikedMovies">
+                <div class="list-group mt-3">
+                    {% for movie in disliked_movies %}
+                        <div class="movie-card">
+                            <span class="movie-title">{{ movie }}</span>
+                            <div class="btn-group">
+                                <form method="POST" action="{{ url_for('modify_list') }}">
+                                    <input type="hidden" name="movie" value="{{ movie }}">
+                                    <input type="hidden" name="action" value="remove_dislike">
+                                    <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-times"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
